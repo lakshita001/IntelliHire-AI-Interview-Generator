@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IntelliHire — Interview Session</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+    }
+    .navbar-custom {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .navbar-brand-text {
+      font-size: 20px; font-weight: 700;
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .timer-box {
+      background: rgba(108,99,255,0.2);
+      border: 1px solid rgba(108,99,255,0.4);
+      border-radius: 10px; padding: 8px 20px;
+      font-size: 18px; font-weight: 700; color: #a78bfa;
+    }
+    .main-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    .progress-wrap { margin-bottom: 32px; }
+    .progress-info {
+      display: flex; justify-content: space-between;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      margin-bottom: 10px;
+    }
+    .progress-bar-bg {
+      background: rgba(255,255,255,0.1);
+      border-radius: 50px; height: 8px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 50px;
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      transition: width 0.5s ease;
+    }
+    .question-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px; padding: 36px;
+      margin-bottom: 24px;
+    }
+    .question-num {
+      font-size: 12px; font-weight: 600;
+      color: #a78bfa; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 16px;
+    }
+    .question-text {
+      font-size: 20px; font-weight: 600;
+      line-height: 1.5; margin-bottom: 28px;
+    }
+    /* Answer Section */
+    .answer-section {
+      background: rgba(108,99,255,0.08);
+      border: 1px solid rgba(108,99,255,0.2);
+      border-radius: 16px; padding: 24px;
+      margin-top: 20px;
+    }
+    .answer-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 16px;
+    }
+    .answer-label {
+      color: #a78bfa; font-size: 14px;
+      font-weight: 600;
+    }
+    .btn-show-answer {
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      border: none; border-radius: 10px;
+      padding: 8px 20px; color: #fff;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+    .btn-show-answer:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(108,99,255,0.4);
+    }
+    .answer-content {
+      display: none;
+      color: rgba(255,255,255,0.85);
+      font-size: 15px; line-height: 1.8;
+    }
+    .answer-content.visible { display: block; }
+    .answer-loading {
+      display: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 14px;
+    }
+    .answer-loading.visible { display: flex; align-items: center; gap: 10px; }
+    .mini-spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(108,99,255,0.3);
+      border-top-color: #6c63ff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Dots */
+    .dots-wrap {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 28px;
+    }
+    .dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dot-done    { background: rgba(108,99,255,0.4); border: 2px solid #6c63ff; color: #fff; }
+    .dot-current { background: #6c63ff; border: 2px solid #a78bfa; color: #fff; }
+    .dot-pending { background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.4); }
+
+    /* Nav Buttons */
+    .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+    .btn-prev {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px; padding: 12px 28px;
+      color: #fff; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+    .btn-prev:hover { background: rgba(255,255,255,0.15); }
+    .btn-next {
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      border: none; border-radius: 12px;
+      padding: 12px 32px; color: #fff;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s;
+      font-family: 'Poppins', sans-serif; flex: 1;
+    }
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(108,99,255,0.4);
+    }
+    .btn-finish {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border: none; border-radius: 12px;
+      padding: 12px 32px; color: #fff;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s;
+      font-family: 'Poppins', sans-serif; flex: 1;
+    }
+    .btn-finish:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(34,197,94,0.4);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar-custom">
+    <span class="navbar-brand-text">🤖 IntelliHire — Interview</span>
+    <div class="timer-box" id="timer">⏱ 00:00</div>
+  </nav>
+
+  <div class="main-container">
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span>Question <span id="currentNum">1</span> of {{ total }}</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Dots -->
+    <div class="dots-wrap" id="dotsWrap"></div>
+
+    <!-- Question Card -->
+    <div class="question-card">
+      <div class="question-num" id="questionNum">Question 1</div>
+      <div class="question-text" id="questionText"></div>
+
+      <!-- Answer Section -->
+      <div class="answer-section">
+        <div class="answer-header">
+          <div class="answer-label">💡 AI Answer</div>
+          <button class="btn-show-answer" id="showAnswerBtn" onclick="loadAnswer()">
+            Show Answer
+          </button>
+        </div>
+        <div class="answer-loading" id="answerLoading">
+          <div class="mini-spinner"></div>
+          AI answer generate kar raha hai...
+        </div>
+        <div class="answer-content" id="answerContent"></div>
+      </div>
+
+      <!-- Nav Buttons -->
+      <div class="btn-row">
+        <button class="btn-prev" id="btnPrev" onclick="prevQuestion()">← Prev</button>
+        <button class="btn-next" id="btnNext" onclick="nextQuestion()">Next →</button>
+        <button class="btn-finish" id="btnFinish" style="display:none"
+          onclick="window.location.href='{{ url_for('main.intro') }}'">
+          🏠 Back to Home
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = {{ questions | tojson }};
+    const answers   = new Array(questions.length).fill("");
+    let current     = 0;
+    let seconds     = 0;
+
+    // Timer
+    setInterval(() => {
+      seconds++;
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = `⏱ ${m}:${s}`;
+    }, 1000);
+
+    function buildDots() {
+      const wrap = document.getElementById('dotsWrap');
+      wrap.innerHTML = '';
+      questions.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot ' +
+          (i === current    ? 'dot-current' :
+           answers[i]       ? 'dot-done'    : 'dot-pending');
+        d.textContent = i + 1;
+        d.onclick = () => goTo(i);
+        wrap.appendChild(d);
+      });
+    }
+
+    function loadQuestion() {
+      const pct = Math.round((current / questions.length) * 100);
+      document.getElementById('currentNum').textContent   = current + 1;
+      document.getElementById('progressPct').textContent  = pct + '%';
+      document.getElementById('progressBar').style.width  = pct + '%';
+      document.getElementById('questionNum').textContent  = `Question ${current + 1}`;
+      document.getElementById('questionText').textContent = questions[current];
+
+      // Reset answer section
+      document.getElementById('answerContent').classList.remove('visible');
+      document.getElementById('answerContent').textContent = '';
+      document.getElementById('answerLoading').classList.remove('visible');
+      document.getElementById('showAnswerBtn').style.display = 'block';
+      document.getElementById('showAnswerBtn').textContent   = 'Show Answer';
+
+      // Prev / Next / Finish buttons
+      document.getElementById('btnPrev').style.display   = current === 0 ? 'none' : 'block';
+      document.getElementById('btnNext').style.display   = current === questions.length - 1 ? 'none' : 'flex';
+      document.getElementById('btnFinish').style.display = current === questions.length - 1 ? 'flex' : 'none';
+
+      buildDots();
+    }
+
+    async function loadAnswer() {
+      const btn = document.getElementById('showAnswerBtn');
+      btn.style.display = 'none';
+      document.getElementById('answerLoading').classList.add('visible');
+
+      try {
+        const response = await fetch('/interview/get-answer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: questions[current] })
+        });
+        const data = await response.json();
+        answers[current] = data.answer;
+
+        document.getElementById('answerLoading').classList.remove('visible');
+        document.getElementById('answerContent').textContent = data.answer;
+        document.getElementById('answerContent').classList.add('visible');
+        buildDots();
+      } catch(e) {
+        document.getElementById('answerLoading').classList.remove('visible');
+        document.getElementById('answerContent').textContent = 'Answer load nahi ho saka. Dobara try karo.';
+        document.getElementById('answerContent').classList.add('visible');
+        btn.style.display = 'block';
+      }
+    }
+
+    function nextQuestion() {
+      if (current < questions.length - 1) { current++; loadQuestion(); }
+    }
+    function prevQuestion() {
+      if (current > 0) { current--; loadQuestion(); }
+    }
+    function goTo(i) { current = i; loadQuestion(); }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
