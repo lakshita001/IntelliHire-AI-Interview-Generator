@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IntelliHire — JD Match</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+    }
+    .navbar-custom {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .navbar-brand-text {
+      font-size: 22px; font-weight: 700;
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .btn-nav {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; border-radius: 10px;
+      padding: 8px 20px; font-size: 13px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .btn-nav:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .main-container { max-width: 750px; margin: 40px auto; padding: 0 20px; }
+    .page-title { font-size: 30px; font-weight: 700; margin-bottom: 6px; }
+    .page-title span {
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .page-sub { color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 32px; }
+    .card-glass {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 32px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      color: #a78bfa; font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 16px; padding-bottom: 8px;
+      border-bottom: 1px solid rgba(108,99,255,0.3);
+    }
+    .upload-zone {
+      border: 2px dashed rgba(108,99,255,0.5);
+      border-radius: 14px; padding: 36px 20px;
+      text-align: center; cursor: pointer;
+      transition: all 0.3s; position: relative;
+    }
+    .upload-zone:hover {
+      border-color: #6c63ff;
+      background: rgba(108,99,255,0.08);
+    }
+    .upload-icon { font-size: 40px; margin-bottom: 10px; }
+    .upload-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .upload-sub { color: rgba(255,255,255,0.4); font-size: 13px; }
+    .file-input {
+      position: absolute; top:0; left:0;
+      width:100%; height:100%; opacity:0; cursor:pointer;
+    }
+    .file-selected {
+      display: none;
+      background: rgba(108,99,255,0.15);
+      border: 1px solid rgba(108,99,255,0.3);
+      border-radius: 10px; padding: 10px 14px;
+      margin-top: 12px; font-size: 13px; color: #a78bfa;
+    }
+    .form-label { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+    .form-control {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px; color: #fff;
+      padding: 12px 16px; font-size: 14px;
+      transition: all 0.3s; width: 100%;
+      font-family: 'Poppins', sans-serif;
+      resize: vertical;
+    }
+    .form-control:focus {
+      outline: none;
+      background: rgba(255,255,255,0.12);
+      border-color: #6c63ff;
+      box-shadow: 0 0 0 3px rgba(108,99,255,0.2);
+      color: #fff;
+    }
+    .form-control::placeholder { color: rgba(255,255,255,0.3); }
+    .divider {
+      text-align: center; color: rgba(255,255,255,0.3);
+      font-size: 13px; margin: 16px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute; top: 50%;
+      width: 42%; height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .divider::before { left: 0; }
+    .divider::after  { right: 0; }
+    .btn-analyze {
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      border: none; border-radius: 14px;
+      padding: 15px; font-size: 16px; font-weight: 600;
+      color: #fff; width: 100%; cursor: pointer;
+      transition: all 0.3s; margin-top: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .btn-analyze:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(108,99,255,0.4);
+    }
+    .feature-pill {
+      display: inline-block;
+      background: rgba(108,99,255,0.15);
+      border: 1px solid rgba(108,99,255,0.3);
+      border-radius: 50px; padding: 6px 16px;
+      font-size: 12px; color: #a78bfa; margin: 4px;
+    }
+    .alert-error {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 12px; padding: 12px 16px;
+      color: #fca5a5; font-size: 13px; margin-bottom: 20px;
+    }
+    .loading-overlay {
+      display: none; position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      background: rgba(15,12,41,0.92);
+      backdrop-filter: blur(10px);
+      z-index: 9999; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .loading-overlay.active { display: flex; }
+    .spinner {
+      width: 60px; height: 60px;
+      border: 4px solid rgba(108,99,255,0.3);
+      border-top-color: #6c63ff; border-radius: 50%;
+      animation: spin 1s linear infinite; margin-bottom: 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: #a78bfa; font-size: 20px; font-weight: 600; }
+    .loading-sub  { color: rgba(255,255,255,0.4); font-size: 14px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar-custom">
+    <span class="navbar-brand-text">🤖 IntelliHire AI</span>
+    <div style="display:flex; gap:10px;">
+      <a href="{{ url_for('history.history') }}" class="btn-nav">📋 History</a>
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-nav"
+          style="border-color:rgba(108,99,255,0.5); background:rgba(108,99,255,0.2);">🛡️ Admin</a>
+      {% endif %}
+      <a href="{{ url_for('main.intro') }}" class="btn-nav">← Home</a>
+    </div>
+  </nav>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">🤖 AI Matching Resume with JD...</div>
+    <div class="loading-sub">Analyzing skills, keywords, experience...</div>
+  </div>
+
+  <div class="main-container">
+    <div class="page-title">JD <span>Resume Match</span></div>
+    <div class="page-sub">Upload your resume + job description — AI will calculate your ATS match score</div>
+
+    <div style="margin-bottom:24px;">
+      <span class="feature-pill">✅ ATS Score</span>
+      <span class="feature-pill">🎯 Skill Match</span>
+      <span class="feature-pill">🔍 Missing Keywords</span>
+      <span class="feature-pill">💡 Suggestions</span>
+    </div>
+
+    {% if error %}
+      <div class="alert-error">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('jd.jd_analyze') }}"
+      enctype="multipart/form-data" onsubmit="showLoading()">
+
+      <!-- Resume Upload -->
+      <div class="card-glass">
+        <div class="section-title">📄 Step 1 — Upload Resume</div>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" name="resume" class="file-input"
+            accept=".pdf" id="fileInput" onchange="fileSelected(this)"/>
+          <div class="upload-icon">📄</div>
+          <div class="upload-title">Drop your Resume here</div>
+          <div class="upload-sub">PDF only</div>
+        </div>
+        <div class="file-selected" id="fileSelected">
+          📎 <span id="fileName"></span> selected ✅
+        </div>
+      </div>
+
+      <!-- JD Input -->
+      <div class="card-glass">
+        <div class="section-title">📋 Step 2 — Add Job Description</div>
+
+        <div class="mb-3">
+          <label class="form-label">Paste Job Description</label>
+          <textarea name="jd_text" class="form-control" rows="8"
+            placeholder="Paste the complete job description here...&#10;&#10;Example:&#10;We are looking for a Python Developer with 2+ years experience in Django, REST APIs, PostgreSQL..."></textarea>
+        </div>
+
+        <div class="divider">OR</div>
+
+        <div>
+          <label class="form-label">Upload JD File (.txt)</label>
+          <div class="upload-zone" style="padding:20px;" id="jdZone">
+            <input type="file" name="jd_file" class="file-input"
+              accept=".txt" id="jdFileInput" onchange="jdSelected(this)"/>
+            <div style="font-size:28px; margin-bottom:8px;">📋</div>
+            <div style="font-size:14px; font-weight:600;">Upload JD .txt file</div>
+            <div class="upload-sub">Text file only</div>
+          </div>
+          <div class="file-selected" id="jdSelected">
+            📎 <span id="jdFileName"></span> selected ✅
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-analyze">
+        🔍 Analyze JD Match & Get ATS Score
+      </button>
+    </form>
+  </div>
+
+  <script>
+    function fileSelected(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('fileName').textContent = input.files[0].name;
+        document.getElementById('fileSelected').style.display = 'block';
+        document.getElementById('uploadZone').style.borderColor = '#6c63ff';
+      }
+    }
+    function jdSelected(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('jdFileName').textContent = input.files[0].name;
+        document.getElementById('jdSelected').style.display = 'block';
+        document.getElementById('jdZone').style.borderColor = '#6c63ff';
+      }
+    }
+    function showLoading() {
+      const file = document.getElementById('fileInput').files.length;
+      const jdText = document.querySelector('textarea[name="jd_text"]').value.trim();
+      const jdFile = document.getElementById('jdFileInput').files.length;
+      if (file && (jdText || jdFile)) {
+        document.getElementById('loadingOverlay').classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -110,7 +110,13 @@
 <body>
   <nav class="navbar-custom">
     <span class="navbar-brand-text">🤖 IntelliHire AI</span>
-    <a href="{{ url_for('main.intro') }}" class="btn-nav">← Back</a>
+    <div style="display:flex; gap:10px;">
+      <a href="{{ url_for('history.history') }}" class="btn-nav">📋 History</a>
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-nav" style="border-color:rgba(108,99,255,0.5); background:rgba(108,99,255,0.2);">🛡️ Admin</a>
+      {% endif %}
+      <a href="{{ url_for('main.intro') }}" class="btn-nav">← Back</a>
+    </div>
   </nav>
 
   <!-- Loading Overlay -->

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IntelliHire — User Detail</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+    }
+    .navbar-custom {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .navbar-brand-text {
+      font-size: 22px; font-weight: 700;
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .btn-nav {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; border-radius: 10px;
+      padding: 8px 20px; font-size: 13px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .btn-nav:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .main-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    .page-title { font-size: 30px; font-weight: 700; margin-bottom: 6px; }
+    .page-title span {
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .page-sub { color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 32px; }
+    .card-glass {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 28px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 15px; font-weight: 600;
+      color: #a78bfa; margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .info-row {
+      display: flex; gap: 10px;
+      font-size: 13px; color: rgba(255,255,255,0.6);
+      margin-bottom: 8px;
+    }
+    .info-label { color: rgba(255,255,255,0.4); min-width: 80px; }
+    .interview-row {
+      display: flex; justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .interview-row:last-child { border-bottom: none; }
+    .company-name { font-size: 14px; font-weight: 600; }
+    .interview-meta { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px; border-radius: 50px;
+      font-size: 11px; font-weight: 500; margin-right: 4px;
+      background: rgba(108,99,255,0.2);
+      border: 1px solid rgba(108,99,255,0.4);
+      color: #a78bfa;
+    }
+    .score-chip {
+      padding: 4px 14px; border-radius: 50px;
+      font-size: 12px; font-weight: 600;
+    }
+    .score-excellent { background: rgba(34,197,94,0.2);  border: 1px solid #22c55e; color: #22c55e; }
+    .score-good      { background: rgba(59,130,246,0.2); border: 1px solid #3b82f6; color: #3b82f6; }
+    .score-average   { background: rgba(234,179,8,0.2);  border: 1px solid #eab308; color: #eab308; }
+    .score-poor      { background: rgba(239,68,68,0.2);  border: 1px solid #ef4444; color: #ef4444; }
+    .empty-state {
+      text-align: center; padding: 40px;
+      color: rgba(255,255,255,0.3); font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar-custom">
+    <span class="navbar-brand-text">🤖 IntelliHire AI</span>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn-nav">← Back to Dashboard</a>
+  </nav>
+
+  <div class="main-container">
+    <div class="page-title"><span>{{ user.name }}</span></div>
+    <div class="page-sub">User profile and interview history</div>
+
+    <!-- User Info -->
+    <div class="card-glass">
+      <div class="card-title">👤 User Info</div>
+      <div class="info-row"><span class="info-label">Name</span><span>{{ user.name }}</span></div>
+      <div class="info-row"><span class="info-label">Email</span><span>{{ user.email }}</span></div>
+      <div class="info-row"><span class="info-label">Joined</span><span>{{ user.created_at[:10] if user.created_at else 'N/A' }}</span></div>
+      <div class="info-row"><span class="info-label">Interviews</span><span>{{ interviews|length }}</span></div>
+    </div>
+
+    <!-- Interviews -->
+    <div class="card-glass">
+      <div class="card-title">📋 All Interviews</div>
+
+      {% if interviews %}
+        {% for iv in interviews %}
+          <div class="interview-row">
+            <div>
+              <div class="company-name">🏢 {{ iv.company_name }}</div>
+              <div style="margin-top:6px;">
+                <span class="tag">{{ iv.domain }}</span>
+                <span class="tag">{{ iv.subdomain }}</span>
+                <span class="tag">{{ iv.level }}</span>
+              </div>
+              <div class="interview-meta">
+                {{ iv.answered or 0 }}/{{ iv.num_questions }} answered •
+                {{ iv.date[:16] if iv.date else 'N/A' }}
+              </div>
+            </div>
+            {% set s = iv.avg_score or 0 %}
+            {% if s >= 8 %}
+              <span class="score-chip score-excellent">⭐ {{ s }}/10</span>
+            {% elif s >= 6 %}
+              <span class="score-chip score-good">👍 {{ s }}/10</span>
+            {% elif s >= 4 %}
+              <span class="score-chip score-average">⚠️ {{ s }}/10</span>
+            {% else %}
+              <span class="score-chip score-poor">❌ {{ s }}/10</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">This user has not taken any interviews yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

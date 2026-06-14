@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IntelliHire — My History</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+    }
+    .navbar-custom {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .navbar-brand-text {
+      font-size: 22px; font-weight: 700;
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .btn-nav {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; border-radius: 10px;
+      padding: 8px 20px; font-size: 13px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .btn-nav:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .main-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    .page-title { font-size: 30px; font-weight: 700; margin-bottom: 6px; }
+    .page-title span {
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .page-sub { color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 32px; }
+    .card-glass {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 24px;
+      margin-bottom: 16px;
+      transition: all 0.3s;
+      text-decoration: none; display: block; color: #fff;
+    }
+    .card-glass:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(108,99,255,0.4);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+    .interview-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .company-name { font-size: 18px; font-weight: 600; }
+    .score-pill {
+      padding: 5px 16px; border-radius: 50px;
+      font-size: 13px; font-weight: 600;
+    }
+    .score-excellent { background: rgba(34,197,94,0.2);  border: 1px solid #22c55e; color: #22c55e; }
+    .score-good      { background: rgba(59,130,246,0.2); border: 1px solid #3b82f6; color: #3b82f6; }
+    .score-average   { background: rgba(234,179,8,0.2);  border: 1px solid #eab308; color: #eab308; }
+    .score-poor      { background: rgba(239,68,68,0.2);  border: 1px solid #ef4444; color: #ef4444; }
+    .tag {
+      display: inline-block;
+      padding: 4px 12px; border-radius: 50px;
+      font-size: 12px; font-weight: 500; margin-right: 6px;
+      background: rgba(108,99,255,0.2);
+      border: 1px solid rgba(108,99,255,0.4);
+      color: #a78bfa;
+    }
+    .meta-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 10px;
+      font-size: 12px; color: rgba(255,255,255,0.4);
+    }
+    .empty-state {
+      text-align: center; padding: 80px 20px;
+    }
+    .empty-icon { font-size: 60px; margin-bottom: 16px; }
+    .empty-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+    .empty-sub { color: rgba(255,255,255,0.4); font-size: 14px; margin-bottom: 24px; }
+    .btn-start {
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      border: none; border-radius: 12px;
+      padding: 12px 28px; font-size: 15px; font-weight: 600;
+      color: #fff; text-decoration: none; display: inline-block;
+      transition: all 0.3s;
+    }
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(108,99,255,0.4);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar-custom">
+    <span class="navbar-brand-text">🤖 IntelliHire AI</span>
+    <div style="display:flex; gap:10px;">
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-nav" style="border-color:rgba(108,99,255,0.5); background:rgba(108,99,255,0.2);">🛡️ Admin</a>
+      {% endif %}
+      <a href="{{ url_for('main.intro') }}" class="btn-nav">← Home</a>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <div class="page-title">My <span>Interview History</span></div>
+    <div class="page-sub">All your past interviews — track your progress over time</div>
+
+    {% if interviews %}
+      {% for iv in interviews %}
+        <a href="{{ url_for('history.history_detail', interview_id=iv.id) }}" class="card-glass">
+          <div class="interview-header">
+            <div>
+              <div class="company-name">🏢 {{ iv.company_name }}</div>
+            </div>
+            {% set score = iv.avg_score or 0 %}
+            {% if score >= 8 %}
+              <span class="score-pill score-excellent">⭐ {{ score }}/10</span>
+            {% elif score >= 6 %}
+              <span class="score-pill score-good">👍 {{ score }}/10</span>
+            {% elif score >= 4 %}
+              <span class="score-pill score-average">⚠️ {{ score }}/10</span>
+            {% else %}
+              <span class="score-pill score-poor">❌ {{ score }}/10</span>
+            {% endif %}
+          </div>
+
+          <div>
+            <span class="tag">{{ iv.domain }}</span>
+            <span class="tag">{{ iv.subdomain }}</span>
+            <span class="tag">{{ iv.level }}</span>
+          </div>
+
+          <div class="meta-row">
+            <span>📝 {{ iv.answered or 0 }} / {{ iv.num_questions }} answered</span>
+            <span>•</span>
+            <span>🕐 {{ iv.date[:16] if iv.date else 'N/A' }}</span>
+          </div>
+        </a>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">No interviews yet</div>
+        <div class="empty-sub">Start your first AI-powered mock interview now!</div>
+        <a href="{{ url_for('interview.interview_form') }}" class="btn-start">
+          🚀 Start Interview
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

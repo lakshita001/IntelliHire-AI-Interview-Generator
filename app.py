@@ -10,7 +10,6 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-change-me")
 
-# Flask-Login setup
 login_manager = LoginManager(app)
 login_manager.login_view = "auth.login"
 login_manager.login_message_category = "info"
@@ -18,17 +17,21 @@ login_manager.login_message_category = "info"
 @login_manager.user_loader
 def load_user(user_id):
     return User.get_by_id(user_id)
-
-# Blueprints register karo
 from routes.auth      import auth_bp
 from routes.main      import main_bp
 from routes.interview import interview_bp
 from routes.resume    import resume_bp
+from routes.admin     import admin_bp
+from routes.history   import history_bp
+from routes.jd        import jd_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
 app.register_blueprint(interview_bp)
 app.register_blueprint(resume_bp)
+app.register_blueprint(admin_bp)
+app.register_blueprint(history_bp)
+app.register_blueprint(jd_bp)
 
 if __name__ == "__main__":
     init_db()

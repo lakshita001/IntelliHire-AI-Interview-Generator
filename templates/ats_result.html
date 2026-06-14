@@ -186,8 +186,12 @@
   <nav class="navbar-custom">
     <span class="navbar-brand-text">🤖 IntelliHire AI</span>
     <div style="display:flex; gap:10px;">
+      <a href="{{ url_for('history.history') }}" class="btn-nav">📋 History</a>
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-nav" style="border-color:rgba(108,99,255,0.5); background:rgba(108,99,255,0.2);">🛡️ Admin</a>
+      {% endif %}
       <a href="{{ url_for('resume.upload') }}" class="btn-nav">↑ Upload Again</a>
-      <a href="{{ url_for('main.intro') }}"   class="btn-nav">← Home</a>
+      <a href="{{ url_for('main.intro') }}" class="btn-nav">← Home</a>
     </div>
   </nav>
 

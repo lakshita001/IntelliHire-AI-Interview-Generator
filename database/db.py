@@ -18,6 +18,7 @@ def init_db():
             name       TEXT    NOT NULL,
             email      TEXT    UNIQUE NOT NULL,
             password   TEXT    NOT NULL,
+            is_admin   INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -47,6 +48,13 @@ def init_db():
             FOREIGN KEY (interview_id) REFERENCES interviews(id)
         )
     """)
+
+    try:
+        c.execute("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0")
+        conn.commit()
+        print("[DB] is_admin column added.")
+    except Exception:
+        pass
 
     conn.commit()
     conn.close()

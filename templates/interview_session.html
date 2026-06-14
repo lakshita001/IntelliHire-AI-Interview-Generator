@@ -166,7 +166,12 @@
 <body>
   <nav class="navbar-custom">
     <span class="navbar-brand-text">🤖 IntelliHire — Interview</span>
-    <div class="timer-box" id="timer">⏱ 00:00</div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-nav" style="border-color:rgba(108,99,255,0.5); background:rgba(108,99,255,0.2); font-size:12px; padding:6px 14px;">🛡️ Admin</a>
+      {% endif %}
+      <div class="timer-box" id="timer">⏱ 00:00</div>
+    </div>
   </nav>
 
   <div class="main-container">

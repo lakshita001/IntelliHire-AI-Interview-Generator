@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IntelliHire — JD Match Result</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+    }
+    .navbar-custom {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .navbar-brand-text {
+      font-size: 22px; font-weight: 700;
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .btn-nav {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; border-radius: 10px;
+      padding: 8px 20px; font-size: 13px;
+      text-decoration: none; transition: all 0.3s;
+    }
+    .btn-nav:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .main-container { max-width: 950px; margin: 40px auto; padding: 0 20px; }
+    .page-title { font-size: 30px; font-weight: 700; margin-bottom: 6px; }
+    .page-title span {
+      background: linear-gradient(90deg, #6c63ff, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .page-sub { color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 32px; }
+    .card-glass {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 28px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 15px; font-weight: 600;
+      color: #a78bfa; margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .score-circle {
+      width: 160px; height: 160px; border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .score-number { font-size: 48px; font-weight: 800; line-height: 1; }
+    .score-label  { font-size: 13px; color: rgba(255,255,255,0.6); }
+    .score-badge {
+      display: inline-block;
+      padding: 6px 20px; border-radius: 50px;
+      font-size: 14px; font-weight: 600;
+    }
+    .score-excellent { background: rgba(34,197,94,0.2);  border: 2px solid #22c55e; color: #22c55e; }
+    .score-good      { background: rgba(59,130,246,0.2); border: 2px solid #3b82f6; color: #3b82f6; }
+    .score-average   { background: rgba(234,179,8,0.2);  border: 2px solid #eab308; color: #eab308; }
+    .score-poor      { background: rgba(239,68,68,0.2);  border: 2px solid #ef4444; color: #ef4444; }
+    .bar-bg {
+      background: rgba(255,255,255,0.1);
+      border-radius: 50px; height: 12px; overflow: hidden; margin-top: 16px;
+    }
+    .bar-fill { height: 100%; border-radius: 50px; transition: width 1.5s ease; }
+    .tag {
+      display: inline-block;
+      padding: 5px 14px; border-radius: 50px;
+      font-size: 12px; font-weight: 500; margin: 4px;
+    }
+    .tag-match   { background: rgba(34,197,94,0.15);  border:1px solid rgba(34,197,94,0.3);  color:#86efac; }
+    .tag-missing { background: rgba(239,68,68,0.15);  border:1px solid rgba(239,68,68,0.3);  color:#fca5a5; }
+    .tag-extra   { background: rgba(108,99,255,0.2);  border:1px solid rgba(108,99,255,0.4); color:#a78bfa; }
+    .tag-keyword { background: rgba(234,179,8,0.15);  border:1px solid rgba(234,179,8,0.3);  color:#fde047; }
+    .match-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; margin: 6px 0;
+    }
+    .match-yes     { background: rgba(34,197,94,0.15);  border:1px solid rgba(34,197,94,0.3);  color:#86efac; }
+    .match-partial { background: rgba(234,179,8,0.15);  border:1px solid rgba(234,179,8,0.3);  color:#fde047; }
+    .match-no      { background: rgba(239,68,68,0.15);  border:1px solid rgba(239,68,68,0.3);  color:#fca5a5; }
+    .suggestion-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(108,99,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0; color: #a78bfa;
+    }
+    .suggestion-text { font-size: 14px; color: rgba(255,255,255,0.8); padding-top: 4px; }
+    .jd-preview {
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px; padding: 14px;
+      font-size: 12px; color: rgba(255,255,255,0.4);
+      line-height: 1.6; font-style: italic;
+    }
+    .btn-action {
+      background: linear-gradient(135deg, #6c63ff, #a78bfa);
+      border: none; border-radius: 12px;
+      padding: 12px 28px; font-size: 14px; font-weight: 600;
+      color: #fff; text-decoration: none;
+      display: inline-block; transition: all 0.3s;
+    }
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(108,99,255,0.4); color: #fff;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px; padding: 12px 28px;
+      font-size: 14px; font-weight: 500;
+      color: #fff; text-decoration: none;
+      display: inline-block; transition: all 0.3s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  </style>
+</head>
+<body>
+  <nav class="navbar-custom">
+    <span class="navbar-brand-text">🤖 IntelliHire AI</span>
+    <div style="display:flex; gap:10px;">
+      <a href="{{ url_for('jd.jd_upload') }}" class="btn-nav">🔄 Match Again</a>
+      <a href="{{ url_for('history.history') }}" class="btn-nav">📋 History</a>
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-nav"
+          style="border-color:rgba(108,99,255,0.5); background:rgba(108,99,255,0.2);">🛡️ Admin</a>
+      {% endif %}
+      <a href="{{ url_for('main.intro') }}" class="btn-nav">← Home</a>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <div class="page-title">JD Match <span>Result</span></div>
+    <div class="page-sub">AI-powered resume vs job description analysis</div>
+
+    <div class="row g-4">
+
+      <!-- ATS Score -->
+      <div class="col-md-4">
+        <div class="card-glass text-center">
+          <div class="card-title">📊 JD Match Score</div>
+          {% set score = result.ats_score %}
+          {% if score >= 80 %}
+            <div class="score-circle" style="background:rgba(34,197,94,0.1); border:3px solid #22c55e;">
+              <div class="score-number" style="color:#22c55e;">{{ score }}</div>
+              <div class="score-label">out of 100</div>
+            </div>
+            <span class="score-badge score-excellent">🌟 Excellent Match</span>
+          {% elif score >= 60 %}
+            <div class="score-circle" style="background:rgba(59,130,246,0.1); border:3px solid #3b82f6;">
+              <div class="score-number" style="color:#3b82f6;">{{ score }}</div>
+              <div class="score-label">out of 100</div>
+            </div>
+            <span class="score-badge score-good">👍 Good Match</span>
+          {% elif score >= 40 %}
+            <div class="score-circle" style="background:rgba(234,179,8,0.1); border:3px solid #eab308;">
+              <div class="score-number" style="color:#eab308;">{{ score }}</div>
+              <div class="score-label">out of 100</div>
+            </div>
+            <span class="score-badge score-average">⚠️ Partial Match</span>
+          {% else %}
+            <div class="score-circle" style="background:rgba(239,68,68,0.1); border:3px solid #ef4444;">
+              <div class="score-number" style="color:#ef4444;">{{ score }}</div>
+              <div class="score-label">out of 100</div>
+            </div>
+            <span class="score-badge score-poor">❌ Low Match</span>
+          {% endif %}
+
+          <div class="bar-bg">
+            <div class="bar-fill" id="atsBar" style="width:0%;
+              background: linear-gradient(90deg,
+              {% if score >= 80 %}#22c55e,#86efac
+              {% elif score >= 60 %}#3b82f6,#93c5fd
+              {% elif score >= 40 %}#eab308,#fde047
+              {% else %}#ef4444,#fca5a5{% endif %});">
+            </div>
+          </div>
+
+          <div style="margin-top:20px;">
+            <div style="font-size:12px; color:rgba(255,255,255,0.4); margin-bottom:8px;">Experience Match</div>
+            <span class="match-badge {% if result.experience_match == 'Yes' %}match-yes{% elif result.experience_match == 'Partial' %}match-partial{% else %}match-no{% endif %}">
+              {% if result.experience_match == 'Yes' %}✅{% elif result.experience_match == 'Partial' %}⚠️{% else %}❌{% endif %}
+              {{ result.experience_match }}
+            </span>
+          </div>
+
+          <div style="margin-top:10px;">
+            <div style="font-size:12px; color:rgba(255,255,255,0.4); margin-bottom:8px;">Education Match</div>
+            <span class="match-badge {% if result.education_match == 'Yes' %}match-yes{% elif result.education_match == 'Partial' %}match-partial{% else %}match-no{% endif %}">
+              {% if result.education_match == 'Yes' %}✅{% elif result.education_match == 'Partial' %}⚠️{% else %}❌{% endif %}
+              {{ result.education_match }}
+            </span>
+          </div>
+
+          <div style="margin-top:16px; font-size:13px; color:rgba(255,255,255,0.6); line-height:1.6; text-align:left;">
+            {{ result.summary }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="col-md-8">
+        <div class="card-glass">
+          <div class="card-title">✅ Matched Skills</div>
+          {% for skill in result.matched_skills %}
+            <span class="tag tag-match">✓ {{ skill }}</span>
+          {% endfor %}
+          {% if not result.matched_skills %}
+            <span style="color:rgba(255,255,255,0.4); font-size:13px;">No matched skills found</span>
+          {% endif %}
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card-glass">
+              <div class="card-title">❌ Missing Skills</div>
+              {% for skill in result.missing_skills %}
+                <span class="tag tag-missing">✗ {{ skill }}</span>
+              {% endfor %}
+              {% if not result.missing_skills %}
+                <span style="color:rgba(255,255,255,0.4); font-size:13px;">No missing skills!</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card-glass">
+              <div class="card-title">➕ Extra Skills</div>
+              {% for skill in result.extra_skills %}
+                <span class="tag tag-extra">{{ skill }}</span>
+              {% endfor %}
+              {% if not result.extra_skills %}
+                <span style="color:rgba(255,255,255,0.4); font-size:13px;">None</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JD Keywords -->
+      <div class="col-12">
+        <div class="card-glass">
+          <div class="card-title">🔑 Important JD Keywords</div>
+          {% for kw in result.jd_keywords %}
+            <span class="tag tag-keyword">{{ kw }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Suggestions -->
+      <div class="col-12">
+        <div class="card-glass">
+          <div class="card-title">💡 Improvement Suggestions</div>
+          {% for suggestion in result.suggestions %}
+            <div class="suggestion-item">
+              <div class="suggestion-num">{{ loop.index }}</div>
+              <div class="suggestion-text">{{ suggestion }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- JD Preview -->
+      <div class="col-12">
+        <div class="card-glass">
+          <div class="card-title">📋 Job Description Preview</div>
+          <div class="jd-preview">{{ jd_preview }}{% if jd_preview|length >= 300 %}...{% endif %}</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; margin-bottom:40px;">
+      <a href="{{ url_for('jd.jd_upload') }}" class="btn-action">🔄 Match Another JD</a>
+      <a href="{{ url_for('interview.interview_form') }}" class="btn-secondary">🚀 Start Interview</a>
+      <a href="{{ url_for('main.intro') }}" class="btn-secondary">🏠 Home</a>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      setTimeout(() => {
+        document.getElementById('atsBar').style.width = '{{ result.ats_score }}%';
+      }, 300);
+    };
+  </script>
+</body>
+</html>
