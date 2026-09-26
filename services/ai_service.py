@@ -18,7 +18,7 @@ def generate_questions(company, level, domain, subdomain, num_questions):
     )
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1000
         )
@@ -51,7 +51,7 @@ def evaluate_answer(question, answer, domain):
     )
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=500
         )
@@ -82,7 +82,7 @@ def generate_answer(question):
     )
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=400
         )
@@ -111,7 +111,7 @@ def analyze_jd_resume(resume_text, jd_text):
     )
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1000
         )
